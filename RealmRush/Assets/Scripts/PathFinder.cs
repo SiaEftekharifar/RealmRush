@@ -26,24 +26,35 @@ public class PathFinder : MonoBehaviour
 
     public List<WayPoint> GetPath() {
 
+        if (path.Count == 0) {
+            CalculatePath();
+        }
+        return path;
+    }
+
+    private void CalculatePath() {
         LoadBlockToDictionary();
-        ColorStartAndEnd();
         BreadthFirstSearch();
         FindPath();
-        return path;
     }
 
     private void FindPath() {
 
-        path.Add(endWayPoint);
+        SetPath(endWayPoint);
+       
         WayPoint previous = endWayPoint.exploreFrom;
         while (previous != startWayPoint) {
 
-            path.Add(previous);
+            SetPath(previous);
             previous = previous.exploreFrom;
         }
-        path.Add(startWayPoint);
+        SetPath(startWayPoint);
         path.Reverse();
+    }
+
+    private void SetPath(WayPoint wayPoint) {
+        path.Add(wayPoint);
+        wayPoint.isPlaceable = false;
     }
 
     private void LoadBlockToDictionary() {
@@ -53,7 +64,7 @@ public class PathFinder : MonoBehaviour
 
             Vector2Int gridPos = wayPoint.GetGridPos();
             if (worldGrid.ContainsKey(gridPos)) {
-                Debug.LogWarning("Overlapping block!");
+                Debug.LogWarning("Overlapping block!" + gridPos);
             }
             else {
                 worldGrid.Add(gridPos, wayPoint);
@@ -61,10 +72,6 @@ public class PathFinder : MonoBehaviour
         }
     }
 
-    private void ColorStartAndEnd() {
-        startWayPoint.SetTopColor(Color.green);
-        endWayPoint.SetTopColor(Color.red);
-    }
 
     private void BreadthFirstSearch() {
 
