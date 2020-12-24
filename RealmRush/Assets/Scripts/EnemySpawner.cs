@@ -8,8 +8,6 @@ public class EnemySpawner : MonoBehaviour {
 
     [SerializeField] GameObject enemy;
 
-    [SerializeField] Transform parent;
-
     void Start() {
 
         StartCoroutine(SpawnEnemies());
